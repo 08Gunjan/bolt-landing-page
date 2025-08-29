@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Users } from 'lucide-react';
 
-const Hero = () => {
+type HeroProps = {
+  onJoinWaitlistClick: () => void;
+};
+
+const Hero: React.FC<HeroProps> = ({ onJoinWaitlistClick }) => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -45,7 +49,10 @@ const Hero = () => {
         </p>
 
         {/* CTA Button */}
-        <button className="bg-[#FF5722] hover:bg-[#FF5DA2] text-white font-bold text-lg px-8 py-4 rounded-xl shadow-lg transition-all duration-300 transform hover:scale-105 animate-pulse-gentle mb-6 uppercase tracking-wide">
+        <button
+          className="bg-gradient-to-r from-orange-500 to-rose-500 hover:opacity-90 text-white font-bold text-lg px-8 py-4 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105 animate-pulse-gentle mb-6 uppercase tracking-wide"
+          onClick={onJoinWaitlistClick}
+        >
           Join the Waitlist 🚀
         </button>
 

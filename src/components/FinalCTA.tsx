@@ -1,7 +1,11 @@
 import React from 'react';
 import { Clock } from 'lucide-react';
 
-const FinalCTA = () => {
+type FinalCTAProps = {
+  onJoinWaitlistClick: () => void;
+};
+
+const FinalCTA: React.FC<FinalCTAProps> = ({ onJoinWaitlistClick }) => {
   return (
     <section className="py-20 px-4 bg-gradient-to-br from-[#FF5722]/10 via-[#FFF7EB] to-[#FF5DA2]/10">
       <div className="max-w-4xl mx-auto text-center">
@@ -18,7 +22,10 @@ const FinalCTA = () => {
           Don't miss out while your friends save time.
         </p>
 
-        <button className="bg-[#FF5722] hover:bg-[#FF5DA2] text-white font-bold text-xl px-10 py-5 rounded-xl shadow-xl transition-all duration-300 transform hover:scale-105 animate-pulse-gentle mb-6 uppercase tracking-wide">
+        <button
+          className="bg-gradient-to-r from-orange-500 to-rose-500 hover:opacity-90 text-white font-bold text-xl px-10 py-5 rounded-full shadow-xl transition-all duration-300 transform hover:scale-105 animate-pulse-gentle mb-6 uppercase tracking-wide"
+          onClick={onJoinWaitlistClick}
+        >
           Join the Waitlist 🚀
         </button>
 
