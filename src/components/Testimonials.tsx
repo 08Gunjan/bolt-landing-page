@@ -3,75 +3,77 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const Testimonials = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [visibleCards, setVisibleCards] = useState(new Set());
-
+  
   const testimonials = [
     {
       name: 'Shivangi Jain',
       school: 'IIM Shillong, MBA 2025',
-      image: 'https://images.pexels.com/photos/3763188/pexels-photo-3763188.jpeg',
+      image: '/src/assets/shivangi.png',
       sentiment: 'positive',
-      quote: 'Finally! No more spending 30 minutes deciding what to eat. MealMood gets my vibe instantly.',
-      alt: 'Young female MBA student smiling confidently',
-      bgColor: 'bg-orange-100'
+      quote: '“MealMood nailed my vibe during exam prep. Instead of scrolling Zomato, I had food sorted in seconds.”',
+      alt: 'Shivangi Jain',
+      bgColor: 'bg-gradient-to-br from-cream-start to-cream-end',
+      customStyle: 'shivangi'
     },
     {
       name: 'Valay Nirmal',
       school: 'IIM Shillong, MBA 2025',
-      image: 'https://images.pexels.com/photos/3182812/pexels-photo-3182812.jpeg',
+      image: '/src/assets/valay.png',
       sentiment: 'positive',
-      quote: 'The recipe mode saved my hostel budget. Actually learned to cook thanks to this app!',
-      alt: 'Young male MBA student with books and laptop',
-      bgColor: 'bg-green-100'
+      quote: '“I used to waste 20 minutes scrolling Zomato. MealMood gave me a quick pick for late-night hunger.”',
+      alt: 'Valay Nirmal',
+      bgColor: 'bg-gradient-to-br from-mint-start to-mint-end'
     },
     {
       name: 'Sanyam Wadhwa',
       school: 'IIM Shillong, MBA 2025',
-      image: 'https://images.pexels.com/photos/3778212/pexels-photo-3778212.jpeg',
+      image: '/src/assets/sanyam.png',
       sentiment: 'positive',
-      quote: 'Best food decision app for students. Period. My entire batch is using it now.',
-      alt: 'Male student in casual wear with confident expression',
-      bgColor: 'bg-pink-100'
+      quote: '“When deadlines pile up, I don’t want to think about food. MealMood takes that stress away.”',
+      alt: 'Sanyam Wadhwa',
+      bgColor: 'bg-gradient-to-br from-lavender-start to-lavender-end'
     },
     {
       name: 'Himanshu N.',
       school: 'MBBS Final Year, Muzaffarnagar',
-      image: 'https://images.pexels.com/photos/5327580/pexels-photo-5327580.jpeg',
+      image: '/src/assets/himanshu.png',
       sentiment: 'neutral',
-      quote: 'Pretty decent app. Helps when I\'m too tired after clinical rotations to think about food.',
-      alt: 'Medical student in white coat looking thoughtful',
-      bgColor: 'bg-purple-100'
+      quote: '“Some ideas don’t match my mood, but most are spot on—better than Swiggy scrolling at 1 AM.”',
+      alt: 'Himanshu N.',
+      bgColor: 'bg-gradient-to-br from-coral-start to-coral-end'
     },
     {
       name: 'Aakash S.',
       school: 'MBBS Final Year, Muzaffarnagar',
-      image: 'https://images.pexels.com/photos/5327921/pexels-photo-5327921.jpeg',
+      image: '/src/assets/aakash.png',
       sentiment: 'positive',
-      quote: 'MealMood understands student life better than my parents do. Quick decisions = more study time.',
-      alt: 'Young medical student with stethoscope smiling',
-      bgColor: 'bg-yellow-100'
+      quote: '“During night duties, MealMood’s quick picks actually save me. One recipe or shortcut and I’m done.”',
+      alt: 'Aakash S.',
+      bgColor: 'bg-gradient-to-br from-pink-start to-pink-end',
+      isHighlightText: true
     },
     {
       name: 'Eshu R.',
       school: 'MBBS Final Year, Muzaffarnagar',
-      image: 'https://images.pexels.com/photos/5327584/pexels-photo-5327584.jpeg',
+      image: '/src/assets/eshu.png',
       sentiment: 'neutral-positive',
-      quote: 'Good concept. The dineout suggestions actually helped me find some decent places near college.',
-      alt: 'Female medical student studying with medical books',
-      bgColor: 'bg-blue-100'
+      quote: '“Not perfect, but it makes late-night decisions way easier between classes and duties.”',
+      alt: 'Eshu R.',
+      bgColor: 'bg-gradient-to-br from-peach-start to-peach-end',
+      isHighlightText: true
     },
     {
       name: 'Shubham D.',
       school: 'MBBS Final Year, Muzaffarnagar',
-      image: 'https://images.pexels.com/photos/5327585/pexels-photo-5327585.jpeg',
+      image: '/src/assets/shubham.jpeg',
       sentiment: 'positive',
-      quote: 'Love how it cuts through the noise. Just tell it your mood and boom - perfect food choice.',
-      alt: 'Male medical student in scrubs with positive expression',
-      bgColor: 'bg-teal-100'
+      quote: '“Hostel food gets boring fast. MealMood gave me new ideas without overthinking.”',
+      alt: 'Shubham D.',
+      bgColor: 'bg-gradient-to-br from-aqua-start to-aqua-end'
     }
   ];
 
-  const getSentimentBadge = (sentiment) => {
+  const getSentimentBadge = (sentiment: string) => {
     switch (sentiment) {
       case 'positive':
         return { bg: 'bg-[#00C896]', text: '✅ Positive', color: 'text-white' };
@@ -84,6 +86,18 @@ const Testimonials = () => {
     }
   };
 
+  interface Testimonial {
+    name: string;
+    school: string;
+    image: string;
+    sentiment: string;
+    quote: string;
+    alt: string;
+    bgColor: string;
+    customStyle?: string;
+    isHighlightText?: boolean;
+  }
+
   const nextSlide = () => {
     setCurrentIndex((prev) => (prev + 1) % testimonials.length);
   };
@@ -92,49 +106,34 @@ const Testimonials = () => {
     setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
   };
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const index = parseInt(entry.target.getAttribute('data-index') || '0');
-            setVisibleCards(prev => new Set(prev).add(index));
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
 
-    const elements = document.querySelectorAll('.testimonial-card');
-    elements.forEach(el => observer.observe(el));
-
-    return () => observer.disconnect();
-  }, []);
-
-  const FlipCard = ({ testimonial, index }) => {
+  const FlipCard = ({ testimonial, index }: { testimonial: Testimonial; index: number }) => {
     const badge = getSentimentBadge(testimonial.sentiment);
     
     return (
       <div
         data-index={index}
-        className={`testimonial-card flip-card h-80 transform transition-all duration-700 ${
-          visibleCards.has(index) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-        }`}
+        className={`testimonial-card flip-card h-80 transform transition-all duration-700 opacity-100 translate-y-0`}
         style={{ transitionDelay: `${index * 150}ms` }}
       >
         <div className="flip-card-inner">
           {/* Front of card */}
-          <div className={`flip-card-front ${testimonial.bgColor} p-6 rounded-2xl shadow-lg h-full flex flex-col items-center justify-center text-center relative`}>
-            <div className={`absolute top-4 right-4 ${badge.bg} ${badge.color} px-2 py-1 rounded-full text-xs font-bold`}>
-              {badge.text}
+          <div 
+            className={`flip-card-front relative rounded-2xl shadow-lg h-full overflow-hidden`}
+            style={{
+              backgroundImage: `url(${testimonial.image})`,
+              backgroundSize: 'cover',
+              backgroundPosition: testimonial.customStyle === 'shivangi' ? 'center' : 'top center',
+              backgroundRepeat: 'no-repeat'
+            }}
+          >
+            <div className={`absolute inset-0 w-full h-full relative z-10 flex flex-col items-center p-6 ${testimonial.isHighlightText ? 'pt-44 pb-8 bg-black bg-opacity-40' : 'pt-6 pb-8 bg-black bg-opacity-20'} rounded-2xl justify-start`}>
+              <div className={`absolute top-4 right-4 ${badge.bg} ${badge.color} px-2 py-1 rounded-full text-xs font-bold`}>
+                {badge.text}
+              </div>
+              <h4 className={`font-black ${testimonial.isHighlightText ? 'text-yellow-300' : 'text-white'} text-xl font-['Poppins'] mb-2`}>{testimonial.name}</h4>
+              <p className={`text-sm ${testimonial.isHighlightText ? 'text-yellow-100' : 'text-white/90'} font-medium`}>{testimonial.school}</p>
             </div>
-            <img
-              src={testimonial.image}
-              alt={testimonial.alt}
-              className="w-20 h-20 rounded-full object-cover mb-4 border-4 border-white shadow-md"
-            />
-            <h4 className="font-black text-[#1C1C1C] text-xl font-['Poppins'] mb-2">{testimonial.name}</h4>
-            <p className="text-sm text-[#1C1C1C]/70 font-medium">{testimonial.school}</p>
           </div>
           
           {/* Back of card */}
