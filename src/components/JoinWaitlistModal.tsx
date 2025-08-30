@@ -82,16 +82,24 @@ const JoinWaitlistModal: React.FC<Props> = ({
   // Load saved state from localStorage
   useEffect(() => {
     const savedConsent = localStorage.getItem(STORAGE_CONSENT_KEY);
-    // const savedCollege = localStorage.getItem(STORAGE_COLLEGE_KEY); // Removed as no longer needed
     if (savedConsent === 'true') {
       setConsent(true);
-      // if (savedCollege) { // Removed as no longer needed
-      //   setSelectedCollege(savedCollege);
-      //   setStep(3); // If already consented and has college, go to done screen
-      // }
     }
 
+    // Check if user is already authenticated when modal opens
+    const checkAuthStatus = async () => {
+      if (open) {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) {
+          // User is already authenticated, show confetti page
+          setStep(3);
+          return;
+        }
+      }
+    };
+
     if (open) {
+      checkAuthStatus();
       setStep(1); // Reset to first step when modal opens
       setName('');
       setNameError('');
@@ -108,7 +116,6 @@ const JoinWaitlistModal: React.FC<Props> = ({
       setShowEmailInput(false);
       setLoadingGoogle(false);
       setLoadingEmail(false);
-      // ... (other state resets as needed)
 
       // Check for pending Google auth data after redirect
       const pendingName = localStorage.getItem(STORAGE_PENDING_NAME);
@@ -116,8 +123,6 @@ const JoinWaitlistModal: React.FC<Props> = ({
 
       if (open && pendingName && pendingCollege) {
         console.log('Detected pending Google auth data in localStorage.');
-        // Trigger the process after the session is confirmed by onAuthStateChange
-        // No need to set state here, just ensure the listener will pick it up
       }
     }
   }, [open]);
