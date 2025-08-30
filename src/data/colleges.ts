@@ -32,5 +32,7 @@ export const colleges = [
   "Vellore Institute of Technology",
   "Manipal Academy of Higher Education",
   "Amity University, Noida",
-  "Lovely Professional University, Phagwara"
+  "Lovely Professional University, Phagwara",
+  "Muzaffarnagar Medical College",
+  "Kalinga Institute of Industrial Technology Bhuvaneshwar (KIIT)"
 ];

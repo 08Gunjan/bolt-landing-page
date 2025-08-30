@@ -7,9 +7,13 @@ import Testimonials from './components/Testimonials';
 import FinalCTA from './components/FinalCTA';
 import Footer from './components/Footer';
 import JoinWaitlistModal from './components/JoinWaitlistModal';
+import { supabase } from '/src/utils/supabaseClient';
+import { signInWithGoogle, signInWithEmail } from '/src/utils/auth';
 
 function App() {
   const [isWaitlistModalOpen, setIsWaitlistModalOpen] = useState(false);
+
+  // console.log('Supabase client:', supabase);
 
   return (
     <div className="bg-[#FFF7EB] text-[#1C1C1C] font-['Inter'] overflow-x-hidden">
@@ -23,6 +27,8 @@ function App() {
       <JoinWaitlistModal
         open={isWaitlistModalOpen}
         onClose={() => setIsWaitlistModalOpen(false)}
+        onAuthGoogle={signInWithGoogle}
+        onAuthEmail={signInWithEmail}
       />
     </div>
   );

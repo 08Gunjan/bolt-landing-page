@@ -162,3 +162,58 @@ a:focus {
     color: #000;
   }
 }
+
+/* Add this to src/index.css for confetti animation */
+.confetti-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none; /* Allows clicks to pass through */
+}
+
+.confetti {
+  position: absolute;
+  width: var(--size);
+  height: var(--size);
+  background-color: var(--color);
+  top: var(--top);
+  left: var(--left);
+  animation: confetti-fall var(--duration) linear infinite;
+  opacity: 0;
+  border-radius: var(--border-radius);
+  transform: translateY(-100px) rotate(var(--rotation-start));
+}
+
+.confetti:nth-child(2n) {
+  background-color: #ff6699; /* Pink */
+  animation-delay: 0.5s;
+}
+
+.confetti:nth-child(3n) {
+  background-color: #66ccff; /* Blue */
+  animation-delay: 1s;
+}
+
+.confetti:nth-child(4n) {
+  background-color: #99ff99; /* Green */
+  animation-delay: 1.5s;
+}
+
+.confetti:nth-child(5n) {
+  background-color: #ff9966; /* Orange */
+  animation-delay: 2s;
+}
+
+@keyframes confetti-fall {
+  0% {
+    transform: translateY(-100px) rotate(var(--rotation-start));
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(calc(100vh + var(--size))) rotate(var(--rotation-end));
+    opacity: 0;
+  }
+}
