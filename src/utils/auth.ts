@@ -4,7 +4,6 @@ export async function signInWithGoogle() {
   const redirectTo = `${window.location.origin}/auth/callback?redirect=/join`;
   const { error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
-    options: { redirectTo }
     options: { redirectTo: `${window.location.origin}/auth/callback?redirect=/join` }
   });
   if (error) {
@@ -17,7 +16,6 @@ export async function signInWithEmail(email: string) {
   const redirectTo = `${window.location.origin}/auth/callback?redirect=/join`;
   const { error } = await supabase.auth.signInWithOtp({
     email,
-    options: { emailRedirectTo: redirectTo }
     options: { emailRedirectTo: `${window.location.origin}/auth/callback?redirect=/join` }
   });
   if (error) {
