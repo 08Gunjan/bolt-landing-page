@@ -86,20 +86,8 @@ const JoinWaitlistModal: React.FC<Props> = ({
       setConsent(true);
     }
 
-    // Check if user is already authenticated when modal opens
-    const checkAuthStatus = async () => {
-      if (open) {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session) {
-          // User is already authenticated, show confetti page
-          setStep(3);
-          return;
-        }
-      }
-    };
 
     if (open) {
-      checkAuthStatus();
       setStep(1); // Reset to first step when modal opens
       setName('');
       setNameError('');
