@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { supabase } from '/src/utils/supabaseClient';
+import { markJoinSuccess } from '../lib/joinSuccess';
 
 const AuthCallback: React.FC = () => {
   useEffect(() => {
@@ -8,6 +9,38 @@ const AuthCallback: React.FC = () => {
       const { data: { session } } = await supabase.auth.getSession();
 
       if (session) {
+        // Check for pending waitlist data
+        const pendingName = localStorage.getItem('mm.pending.name');
+        const pendingCollege = localStorage.getItem('mm.pending.college');
+        
+        if (pendingName && pendingCollege) {
+          try {
+            // Complete the waitlist join now that user is authenticated
+            const { data, error } = await supabase
+              .from('profiles')
+              .upsert({
+                id: session.user.id,
+                name: pendingName,
+                college: pendingCollege,
+                email: session.user.email || '',
+                provider: 'email',
+              });
+
+            if (error) {
+              console.error('Error completing waitlist join:', error.message);
+            } else {
+              console.log('Successfully completed waitlist join:', data);
+              markJoinSuccess();
+            }
+            
+            // Clear pending data
+            localStorage.removeItem('mm.pending.name');
+            localStorage.removeItem('mm.pending.college');
+          } catch (err) {
+            console.error('Error during waitlist completion:', err);
+          }
+        }
+        
         // User is authenticated, redirect to the home page or dashboard
         window.location.href = '/'; 
       } else {

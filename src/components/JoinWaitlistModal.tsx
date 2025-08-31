@@ -300,9 +300,17 @@ const JoinWaitlistModal: React.FC<Props> = ({
             try {
               if (showEmailInput && validateEmail(email)) {
                 setLoadingEmail(true); // Set specific loading state
-             handleClose(); // Close modal immediately after Google sign-in
-                await (onJoinWaitlist || defaultOnJoinWaitlist)(name, finalCollege, 'email');
-                setSuccessMessage('Successfully joined waitlist with email!');
+                        // Store pending data for after email authentication
+                        localStorage.setItem(STORAGE_PENDING_NAME, name);
+                        localStorage.setItem(STORAGE_PENDING_COLLEGE, finalCollege);
+                        
+                        await (onAuthEmail ? onAuthEmail(email) : Promise.resolve());
+                        setSuccessMessage('Check your email for the magic link to complete signup!');
+                        
+                        // Close modal after showing message briefly
+                        setTimeout(() => {
+                          handleClose();
+                        }, 2000);
               } else { // Removed phone authentication condition
                 // This case should ideally not be reached if buttons are disabled correctly
                 setAuthError('Please sign in with an authentication method.');
@@ -550,10 +558,17 @@ const JoinWaitlistModal: React.FC<Props> = ({
                           setAuthError(null); // Clear previous errors
                           setSuccessMessage(null); // Clear previous success messages
                           try {
+                            // Store pending data for after email authentication
+                            localStorage.setItem(STORAGE_PENDING_NAME, name);
+                            localStorage.setItem(STORAGE_PENDING_COLLEGE, finalCollege);
+                            
                             await (onAuthEmail ? onAuthEmail(email) : Promise.resolve());
-                            await (onJoinWaitlist || defaultOnJoinWaitlist)(name, finalCollege, 'email');
-                            setSuccessMessage('Successfully joined waitlist with email!');
-                            setStep(3); // Advance to done screen after successful auth and waitlist join
+                            setSuccessMessage('Check your email for the magic link to complete signup!');
+                            
+                            // Close modal after showing message briefly
+                            setTimeout(() => {
+                              handleClose();
+                            }, 2000);
                           } catch (err: any) {
                             setEmailError(err.message || 'An unknown error occurred during email sign-in or waitlist join.');
                           } finally {
