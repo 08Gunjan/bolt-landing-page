@@ -50,51 +50,50 @@ const JoinWaitlistModal: React.FC<Props> = ({
 
   // Default onJoinWaitlist implementation to store data in Supabase profiles table
   const defaultOnJoinWaitlist = async (name: string, college: string, authMethod: 'email' | 'google') => {
-    // First check if we have a session
-    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-
-    if (sessionError) {
-      console.error('Error getting session for waitlist join:', sessionError.message);
-      throw new Error('Authentication session error. Please try signing in again.');
-    }
-    
-    if (!session) {
-      console.error('No session found for waitlist join.');
-      throw new Error('Please sign in first to join the waitlist.');
-    }
-
-    // Now get user details
-    const { data: { user }, error: userError } = await supabase.auth.getUser();
-    
-    if (userError || !user) {
-      console.error('Error getting user details:', userError?.message);
-      throw new Error('Unable to get user details. Please try again.');
+    // 1) Require session
+    const { data: sessionData } = await supabase.auth.getSession();
+    if (!sessionData?.session) {
+      // open your sign-in UI or trigger OAuth; then return
+      const redirectTo = `${window.location.origin}/auth/callback?redirect=/join`;
+      if (authMethod === 'google') {
+        await supabase.auth.signInWithOAuth({ 
+          provider: 'google', 
+          options: { redirectTo } 
+        });
+      } else {
+        // For email, we need the email address - this should be handled by the UI
+        console.log('No session for email auth - UI should handle this');
+      }
+      return;
     }
 
-    console.log('User object from supabase.auth.getUser():', user);
-    console.log('Data for profiles upsert:', { id: user.id, name, college, email: user.email, provider: authMethod });
+    // 2) Get user
+    const { data: userData, error: userErr } = await supabase.auth.getUser();
+    if (userErr || !userData?.user) {
+      console.error('getUser error:', userErr);
+      // optionally re-open sign-in
+      return;
+    }
 
-    const { data, error } = await supabase
+    // 3) Upsert waitlist (idempotent)
+    const { error: upsertErr } = await supabase
       .from('profiles')
       .upsert({
-        id: user.id,
+        id: userData.user.id,
         name: name,
         college: college,
-        email: user.email || '', // Use email from auth.user, provide fallback
+        email: userData.user.email || '',
         provider: authMethod,
       }, { onConflict: 'id' });
 
-    if (error) {
-      console.error('Error inserting into profiles:', error.message);
-      // Don't throw on conflict errors - treat as success
-      if (!error.message.includes('duplicate') && !error.message.includes('unique')) {
-        throw new Error(`Failed to join waitlist: ${error.message}`);
-      }
+    if (upsertErr) {
+      console.error('waitlist upsert error:', upsertErr);
+      // show friendly toast, do not throw
+      return;
     }
     
-    console.log('Successfully joined waitlist and updated profile:', data);
-    
-    // Mark join success after successful upsert
+    // 4) Success UX
+    // trigger confetti and switch to Done/Success state
     markJoinSuccess();
   };
 
