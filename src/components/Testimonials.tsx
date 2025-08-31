@@ -8,7 +8,7 @@ const Testimonials = () => {
     {
       name: 'Shivangi Jain',
       school: 'IIM Shillong, MBA 2025',
-      image: '/src/assets/shivangi.png',
+      image: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=400',
       sentiment: 'positive',
       quote: '“MealMood nailed my vibe during exam prep. Instead of scrolling Zomato, I had food sorted in seconds.”',
       alt: 'Shivangi Jain',
@@ -18,7 +18,7 @@ const Testimonials = () => {
     {
       name: 'Valay Nirmal',
       school: 'IIM Shillong, MBA 2025',
-      image: '/src/assets/valay.png',
+      image: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=400',
       sentiment: 'positive',
       quote: '“I used to waste 20 minutes scrolling Zomato. MealMood gave me a quick pick for late-night hunger.”',
       alt: 'Valay Nirmal',
@@ -27,7 +27,7 @@ const Testimonials = () => {
     {
       name: 'Sanyam Wadhwa',
       school: 'IIM Shillong, MBA 2025',
-      image: '/src/assets/sanyam.png',
+      image: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=400',
       sentiment: 'positive',
       quote: '“When deadlines pile up, I don’t want to think about food. MealMood takes that stress away.”',
       alt: 'Sanyam Wadhwa',
@@ -36,7 +36,7 @@ const Testimonials = () => {
     {
       name: 'Himanshu N.',
       school: 'MBBS Final Year, Muzaffarnagar',
-      image: '/src/assets/himanshu.png',
+      image: 'https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&w=400',
       sentiment: 'neutral',
       quote: '“Some ideas don’t match my mood, but most are spot on—better than Swiggy scrolling at 1 AM.”',
       alt: 'Himanshu N.',
@@ -45,7 +45,7 @@ const Testimonials = () => {
     {
       name: 'Aakash S.',
       school: 'MBBS Final Year, Muzaffarnagar',
-      image: '/src/assets/aakash.png',
+      image: 'https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=400',
       sentiment: 'positive',
       quote: '“During night duties, MealMood’s quick picks actually save me. One recipe or shortcut and I’m done.”',
       alt: 'Aakash S.',
@@ -55,7 +55,7 @@ const Testimonials = () => {
     {
       name: 'Eshu R.',
       school: 'MBBS Final Year, Muzaffarnagar',
-      image: '/src/assets/eshu.png',
+      image: 'https://images.pexels.com/photos/1130626/pexels-photo-1130626.jpeg?auto=compress&cs=tinysrgb&w=400',
       sentiment: 'neutral-positive',
       quote: '“Not perfect, but it makes late-night decisions way easier between classes and duties.”',
       alt: 'Eshu R.',
@@ -65,7 +65,7 @@ const Testimonials = () => {
     {
       name: 'Shubham D.',
       school: 'MBBS Final Year, Muzaffarnagar',
-      image: '/src/assets/shubham.jpeg',
+      image: 'https://images.pexels.com/photos/1040880/pexels-photo-1040880.jpeg?auto=compress&cs=tinysrgb&w=400',
       sentiment: 'positive',
       quote: '“Hostel food gets boring fast. MealMood gave me new ideas without overthinking.”',
       alt: 'Shubham D.',
