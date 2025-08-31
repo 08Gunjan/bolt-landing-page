@@ -117,9 +117,16 @@ const JoinWaitlistModal: React.FC<Props> = ({
 
   // Listen for Supabase auth state changes to directly process sign-ins within the modal
   useEffect(() => {
+    let isProcessingAuth = false;
+    
     const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log('JoinWaitlistModal Auth state change detected:', event, session);
-      if (open && event === 'SIGNED_IN' && session) {
+      
+      // Only process SIGNED_IN events that happen after the modal is opened
+      // and when we're not already processing an auth event
+      if (open && event === 'SIGNED_IN' && session && !isProcessingAuth) {
+        isProcessingAuth = true;
+        
         // Retrieve pending data from localStorage
         const storedName = localStorage.getItem(STORAGE_PENDING_NAME);
         const storedCollege = localStorage.getItem(STORAGE_PENDING_COLLEGE);
@@ -130,35 +137,19 @@ const JoinWaitlistModal: React.FC<Props> = ({
           try {
             await (onJoinWaitlist || defaultOnJoinWaitlist)(storedName, storedCollege, 'google');
             setSuccessMessage('Successfully joined waitlist!');
-            setStep(3); // Show confetti page
+            handleClose(); // Close modal instead of showing confetti
             localStorage.removeItem(STORAGE_PENDING_NAME); // Clear stored data
             localStorage.removeItem(STORAGE_PENDING_COLLEGE); // Clear stored data
           } catch (err: any) {
             setAuthError(err.message || 'An unknown error occurred after sign-in.');
           } finally {
             setLoadingGoogle(false);
+            isProcessingAuth = false;
           }
         } else {
-          console.warn('User signed in but stored name or college data is missing, cannot upsert profile.');
-          // If the modal is open due to a new sign-in, but no pending data,
-          // it means it was an email sign-in or a direct sign-in without opening the modal first.
-          // In this case, we should still show the confetti if possible.
-          if (name && (selectedCollege || otherCollege)) {
-            const currentFinalCollege = showOtherCollegeInput ? otherCollege : selectedCollege;
-            if (currentFinalCollege) {
-              console.log('Email sign-in detected, processing current modal data.');
-              setLoadingEmail(true); // Assume email for this path if no pending Google data
-              try {
-                await (onJoinWaitlist || defaultOnJoinWaitlist)(name, currentFinalCollege, 'email');
-                setSuccessMessage('Successfully joined waitlist!');
-                setStep(3);
-              } catch (err: any) {
-                setAuthError(err.message || 'An unknown error occurred after email sign-in.');
-              } finally {
-                setLoadingEmail(false);
-              }
-            }
-          }
+          // No pending data means this is likely an existing session
+          // Don't automatically process anything
+          isProcessingAuth = false;
         }
       }
     });
