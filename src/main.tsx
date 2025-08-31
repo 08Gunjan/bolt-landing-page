@@ -1,7 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
-import AuthCallback from './pages/AuthCallback.tsx'; // Import the new AuthCallback component
+import AuthCallback from './pages/AuthCallback.tsx';
 import './index.css';
 
 const rootElement = document.getElementById('root')!;

@@ -3,7 +3,7 @@ import { supabase } from './supabaseClient';
 export async function signInWithGoogle() {
   const { error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
-    options: { redirectTo: `${location.origin}/auth/callback` }
+    options: { redirectTo: `${window.location.origin}/auth/callback?redirect=/join` }
   });
   if (error) {
     console.error("Error signing in with Google:", error);
@@ -14,7 +14,7 @@ export async function signInWithGoogle() {
 export async function signInWithEmail(email: string) {
   const { error } = await supabase.auth.signInWithOtp({
     email,
-    options: { emailRedirectTo: `${location.origin}/auth/callback` }
+    options: { emailRedirectTo: `${window.location.origin}/auth/callback?redirect=/join` }
   });
   if (error) {
     console.error("Error signing in with Email:", error);

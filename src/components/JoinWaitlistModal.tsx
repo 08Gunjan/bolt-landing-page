@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { X, Loader2, CheckCircle2, Mail } from 'lucide-react';
 import { colleges } from '../data/colleges';
-import { supabase } from '../utils/supabaseClient'; // Corrected import path
+import { supabase } from '../lib/supabase';
 import { markJoinSuccess } from '../lib/joinSuccess';
 // import { useClipboard } from '../hooks/useClipboard'; // Removed useClipboard hook
 
@@ -50,14 +50,25 @@ const JoinWaitlistModal: React.FC<Props> = ({
 
   // Default onJoinWaitlist implementation to store data in Supabase profiles table
   const defaultOnJoinWaitlist = async (name: string, college: string, authMethod: 'email' | 'google') => {
-    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    // First check if we have a session
+    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
 
-    if (userError) {
-      console.error('Error getting user for waitlist join (userError):', userError?.message);
+    if (sessionError) {
+      console.error('Error getting session for waitlist join:', sessionError.message);
+      throw new Error('Authentication session error. Please try signing in again.');
     }
-    if (!user) {
-      console.error('Error getting user for waitlist join (user is null or undefined).');
-      throw new Error('User not authenticated or session expired.');
+    
+    if (!session) {
+      console.error('No session found for waitlist join.');
+      throw new Error('Please sign in first to join the waitlist.');
+    }
+
+    // Now get user details
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    
+    if (userError || !user) {
+      console.error('Error getting user details:', userError?.message);
+      throw new Error('Unable to get user details. Please try again.');
     }
 
     console.log('User object from supabase.auth.getUser():', user);
@@ -71,12 +82,16 @@ const JoinWaitlistModal: React.FC<Props> = ({
         college: college,
         email: user.email || '', // Use email from auth.user, provide fallback
         provider: authMethod,
-      });
+      }, { onConflict: 'id' });
 
     if (error) {
       console.error('Error inserting into profiles:', error.message);
-      throw new Error(`Failed to join waitlist: ${error.message}`);
+      // Don't throw on conflict errors - treat as success
+      if (!error.message.includes('duplicate') && !error.message.includes('unique')) {
+        throw new Error(`Failed to join waitlist: ${error.message}`);
+      }
     }
+    
     console.log('Successfully joined waitlist and updated profile:', data);
     
     // Mark join success after successful upsert
@@ -561,6 +576,14 @@ const JoinWaitlistModal: React.FC<Props> = ({
                             // Store pending data for after email authentication
                             localStorage.setItem(STORAGE_PENDING_NAME, name);
                             localStorage.setItem(STORAGE_PENDING_COLLEGE, finalCollege);
+                            
+                            await (onAuthEmail ? onAuthEmail(email) : Promise.resolve());
+                            setSuccessMessage('Check your email for the magic link to complete signup!');
+                            
+                            // Close modal after showing message briefly
+                            setTimeout(() => {
+                              handleClose();
+                            }, 2000);
                             
                             await (onAuthEmail ? onAuthEmail(email) : Promise.resolve());
                             setSuccessMessage('Check your email for the magic link to complete signup!');
