@@ -586,8 +586,7 @@ const JoinWaitlistModal: React.FC<Props> = ({
                       try {
                         await (onAuthEmail ? onAuthEmail(email) : Promise.resolve()); // Use onAuthEmail or resolve immediately
                         await (onJoinWaitlist || defaultOnJoinWaitlist)(name, finalCollege, 'email');
-                        setSuccessMessage('Successfully joined waitlist with email!');
-                        setStep(3); // Advance to done screen after successful auth and waitlist join
+                        handleClose(); // Close modal after successful join
                       } catch (err: any) {
                         setEmailError(err.message || 'An unknown error occurred during email sign-in or waitlist join.');
                       } finally {
