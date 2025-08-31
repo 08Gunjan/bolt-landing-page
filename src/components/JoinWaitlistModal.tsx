@@ -306,7 +306,7 @@ const JoinWaitlistModal: React.FC<Props> = ({
             try {
               if (showEmailInput && validateEmail(email)) {
                 setLoadingEmail(true); // Set specific loading state
-                await (onAuthEmail ? onAuthEmail(email) : Promise.resolve());
+             handleClose(); // Close modal immediately after Google sign-in
                 await (onJoinWaitlist || defaultOnJoinWaitlist)(name, finalCollege, 'email');
                 setSuccessMessage('Successfully joined waitlist with email!');
               } else { // Removed phone authentication condition
