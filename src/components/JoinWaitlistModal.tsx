@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { X, Loader2, CheckCircle2, Mail } from 'lucide-react';
 import { colleges } from '../data/colleges';
 import { supabase } from '../utils/supabaseClient'; // Corrected import path
+import { markJoinSuccess } from '../lib/joinSuccess';
 // import { useClipboard } from '../hooks/useClipboard'; // Removed useClipboard hook
 
 type Props = {
@@ -77,6 +78,9 @@ const JoinWaitlistModal: React.FC<Props> = ({
       throw new Error(`Failed to join waitlist: ${error.message}`);
     }
     console.log('Successfully joined waitlist and updated profile:', data);
+    
+    // Mark join success after successful upsert
+    markJoinSuccess();
   };
 
   // Load saved state from localStorage
@@ -136,7 +140,6 @@ const JoinWaitlistModal: React.FC<Props> = ({
           setLoadingGoogle(true); // Assuming Google is the primary trigger for this path
           try {
             await (onJoinWaitlist || defaultOnJoinWaitlist)(storedName, storedCollege, 'google');
-            setSuccessMessage('Successfully joined waitlist!');
             handleClose(); // Close modal instead of showing confetti
             localStorage.removeItem(STORAGE_PENDING_NAME); // Clear stored data
             localStorage.removeItem(STORAGE_PENDING_COLLEGE); // Clear stored data

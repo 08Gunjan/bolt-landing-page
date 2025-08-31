@@ -7,6 +7,7 @@ import Testimonials from './components/Testimonials';
 import FinalCTA from './components/FinalCTA';
 import Footer from './components/Footer';
 import JoinWaitlistModal from './components/JoinWaitlistModal';
+import JoinSuccessGate from './components/JoinSuccessGate';
 import { supabase } from '/src/utils/supabaseClient';
 import { signInWithGoogle, signInWithEmail } from '/src/utils/auth';
 
@@ -30,6 +31,7 @@ function App() {
         onAuthGoogle={signInWithGoogle}
         onAuthEmail={signInWithEmail}
       />
+      <JoinSuccessGate />
     </div>
   );
 }
